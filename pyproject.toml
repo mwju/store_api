@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "tdd project"
+name = "store_api"
 version = "0.0.1"
 description = ""
-authors = ["Nayanna Nara <nayanna501@gmail.com>"]
+authors = ["Mario <mwjunior@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

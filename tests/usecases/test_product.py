@@ -5,7 +5,7 @@ import pytest
 from store.core.exceptions import NotFoundException
 from store.schemas.product import ProductOut, ProductUpdateOut
 from store.usecases.product import product_usecase
-
+from decimal import Decimal
 
 async def test_usecases_create_should_return_success(product_in):
     result = await product_usecase.create(body=product_in)
@@ -40,7 +40,7 @@ async def test_usecases_query_should_return_success():
 
 
 async def test_usecases_update_should_return_success(product_up, product_inserted):
-    product_up.price = "7.500"
+    product_up.price = "7500.00" 
     result = await product_usecase.update(id=product_inserted.id, body=product_up)
 
     assert isinstance(result, ProductUpdateOut)

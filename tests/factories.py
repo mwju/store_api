@@ -1,3 +1,6 @@
+import uuid
+
+
 def product_data():
     return {
         "name": "Iphone 14 Pro Max",
@@ -5,7 +8,6 @@ def product_data():
         "price": "8.500",
         "status": True,
     }
-
 
 def products_data():
     return [
