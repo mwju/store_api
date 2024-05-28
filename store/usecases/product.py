@@ -6,7 +6,7 @@ from store.db.mongo import db_client
 from store.models.product import ProductModel
 from store.schemas.product import ProductIn, ProductOut, ProductUpdate, ProductUpdateOut
 from store.core.exceptions import NotFoundException
-
+from datetime import datetime
 
 class ProductUsecase:
     def __init__(self) -> None:
@@ -34,11 +34,19 @@ class ProductUsecase:
     async def update(self, id: UUID, body: ProductUpdate) -> ProductUpdateOut:
         result = await self.collection.find_one_and_update(
             filter={"id": id},
-            update={"$set": body.model_dump(exclude_none=True)},
+            update={"$set": {"updated_at": datetime.utcnow(), **body.model_dump(exclude_none=True)}},
             return_document=pymongo.ReturnDocument.AFTER,
         )
 
         return ProductUpdateOut(**result)
+
+    async def query(self, filter_value: bool = None) -> List[ProductOut]:
+        if filter_value is not None:
+            filter = {"price": {"$gt": 5000, "$lt": 8000}}
+        else:
+            filter = {}
+
+        return [ProductOut(**item) async for item in self.collection.find(filter)]
 
     async def delete(self, id: UUID) -> bool:
         product = await self.collection.find_one({"id": id})

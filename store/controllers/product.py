@@ -13,7 +13,13 @@ router = APIRouter(tags=["products"])
 async def post(
     body: ProductIn = Body(...), usecase: ProductUsecase = Depends()
 ) -> ProductOut:
-    return await usecase.create(body=body)
+    try:
+        return await usecase.create(body=body)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro ao inserir produto; " + str(e),
+        )
 
 
 @router.get(path="/{id}", status_code=status.HTTP_200_OK)
@@ -35,10 +41,13 @@ async def query(usecase: ProductUsecase = Depends()) -> List[ProductOut]:
 async def patch(
     id: UUID4 = Path(alias="id"),
     body: ProductUpdate = Body(...),
-    usecase: ProductUsecase = Depends(),
-) -> ProductUpdateOut:
-    return await usecase.update(id=id, body=body)
-
+    usecase: ProductUsecase = Depends(),) -> ProductUpdateOut:
+    try:
+        return await usecase.update(id=id, body=body)
+    except NotFoundException as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Não localizado; " + e.message
+        )
 
 @router.delete(path="/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete(

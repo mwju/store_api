@@ -54,7 +54,7 @@ async def test_controller_get_should_return_not_found(client, products_url):
 
 @pytest.mark.usefixtures("products_inserted")
 async def test_controller_query_should_return_success(client, products_url):
-    response = await client.get(products_url)
+    response = await client.get(products_url, params={"filter_value": True})
 
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response.json(), List)
